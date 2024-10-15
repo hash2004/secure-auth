@@ -25,14 +25,10 @@ def insert_user(username: str, password: str, name: str, email: str):
         if existing_user:
             return {"error": "User with this username already exists."}
         
-        # If not, proceed to insert
-        hashed_password = hash_password(password)
-        print("Hashed password: ", hashed_password)
-        hashed_password = hashed_password.strip()
         timestamp = datetime.now().isoformat()
         response = supabase.table("user_info").insert({
             "username": username,
-            "password": hashed_password,
+            "password": password,
             "name": name,
             "is_verified": False,
             "email": email,
