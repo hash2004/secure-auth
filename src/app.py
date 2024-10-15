@@ -70,11 +70,6 @@ async def verify_otp(verify_data: VerifyOTPModel):
 @app.post("/login")
 async def login(user: LoginModel):
     existing_user = get_user_by_username(user.username)
-        
-    normal_pass = "Shahryar"
-    hashed_pass = hash_password(normal_pass)
-    print(verify_password(normal_pass, hashed_pass))
-    
     
     if not existing_user:
         raise HTTPException(status_code=400, detail="Invalid credentials. User not found.")
