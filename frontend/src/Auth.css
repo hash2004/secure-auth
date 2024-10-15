@@ -1,0 +1,23 @@
+/* src/components/Auth.css */
+.auth-container {
+    max-width: 600px;
+  }
+  
+  .auth-card {
+    background-color: #f0f0f0; /* Light grey */
+    border: 1px solid #ccc;
+  }
+  
+  .btn-primary {
+    background-color: #6c757d; /* Grey color for buttons */
+    border-color: #6c757d;
+  }
+  
+  .btn-primary:hover {
+    background-color: #5a6268;
+  }
+  
+  .card {
+    border-radius: 10px;
+  }
+  
