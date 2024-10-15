@@ -10,7 +10,6 @@ otp_message = """
       background-color: #f4f4f9;
       margin: 0;
       padding: 0;
-      text-align: center;
     }}
     .container {{
       background-color: white;
@@ -19,9 +18,7 @@ otp_message = """
       margin: 50px auto;
       max-width: 400px;
       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      text-align: center;
     }}
     .header {{
       font-size: 24px;
@@ -52,7 +49,7 @@ otp_message = """
 <body>
   <div class="container">
     <div class="svg-icon">
-      <img src="/home/hashim/secure-auth/logo.png" alt="LOGIC Logo" width="100" />
+      <img src="https://raw.githubusercontent.com/hash2004/secure-auth/main/assets/logo.png" alt="LOGIC Logo" width="100" />
     </div>
     <div class="header">
       Welcome to LOGIC!

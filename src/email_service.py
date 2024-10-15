@@ -12,7 +12,6 @@ def generate_otp(length=OTP_LENGTH):
     return otp
 
 def send_otp(receiver_email, otp):
-    # Create the message as a single MIMEText object
     message = MIMEText(otp_message.format(otp=otp, OTP_EXPIRATION_TIME=OTP_EXPIRATION_TIME), "html")
     message["Subject"] = "Your OTP Code"
     message["From"] = EMAIL_SENDER
@@ -34,11 +33,12 @@ def is_otp_expired(otp_timestamp):
     return False
 
 
-# Example usage:
 
+# An example on how to use the functions
+"""
 otp = generate_otp()
 
-recipient_email = "i211675@nu.edu.pk"  
+recipient_email = "najamabass2020@gmail.com"  
 send_otp(recipient_email, otp)
 
 otp_generated_time = datetime.now()
@@ -47,3 +47,5 @@ if is_otp_expired(otp_generated_time):
     print("OTP has expired.")
 else:
     print("OTP is still valid.")
+
+"""
