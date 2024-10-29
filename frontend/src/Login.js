@@ -1,58 +1,67 @@
-// src/components/Login.js
+// src/components/LoginForm.js
 import React, { useState } from 'react';
+import { login } from './services/api';
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 import { useNavigate } from 'react-router-dom';
-import './Auth.css'; // Custom CSS for additional styling
 
-const Login = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const navigate = useNavigate();
+const LoginForm = () => {
+    const [formData, setFormData] = useState({ username: '', password: '' });
+    const [message, setMessage] = useState('');
+    const navigate = useNavigate();
 
-  const handleLogin = (e) => {
-    e.preventDefault();
-    // Normally, you would validate credentials and log in
-    navigate('/placeholder');
-  };
+    const handleChange = (e) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+    };
 
-  return (
-    <div className="container mt-5 auth-container">
-      <div className="row justify-content-center">
-        <div className="col-md-4">
-          <div className="card p-4 shadow auth-card">
-            <h3 className="text-center mb-4">Login</h3>
-            <form onSubmit={handleLogin}>
-              <div className="form-group mb-3">
-                <label>Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-              </div>
-              <div className="form-group mb-3">
-                <label>Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <button type="submit" className="btn btn-primary btn-block w-100 mt-3">
-                Login
-              </button>
-            </form>
-            <p className="text-center mt-3">
-              Don't have an account? <a href="/signup" className="text-primary">Sign Up</a>
-            </p>
-          </div>
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await login(formData);
+            setMessage(response.data.message);
+            navigate('/placeholder');
+
+        } catch (error) {
+            setMessage(error.response.data.detail);
+        }
+    };
+
+    return (
+        <div className="container mt-5">
+            <div className="row justify-content-center">
+                <div className="col-md-6">
+                    <h2 className="text-center mb-4">Login</h2>
+                    <form onSubmit={handleSubmit} className="bg-light p-4 rounded shadow">
+                        <div className="form-group mb-3">
+                            <label htmlFor="username">Username</label>
+                            <input 
+                                type="text" 
+                                name="username" 
+                                id="username" 
+                                className="form-control" 
+                                placeholder="Enter your username" 
+                                onChange={handleChange} 
+                                required 
+                            />
+                        </div>
+                        <div className="form-group mb-3">
+                            <label htmlFor="password">Password</label>
+                            <input 
+                                type="password" 
+                                name="password" 
+                                id="password" 
+                                className="form-control" 
+                                placeholder="Enter your password" 
+                                onChange={handleChange} 
+                                required 
+                            />
+                        </div>
+                        <button type="submit" className="btn btn-primary btn-block">Login</button>
+                    </form>
+                    {message && <p className="text-danger text-center mt-3">{message}</p>}
+                </div>
+            </div>
         </div>
-      </div>
-    </div>
-  );
+    );
 };
 
-export default Login;
+export default LoginForm;

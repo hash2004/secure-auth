@@ -6,12 +6,24 @@ from src.email_service import generate_otp, send_otp, is_otp_expired
 from supabase import create_client, Client
 from src.config import SUPABASE_URL, SUPABASE_KEY, OTP_EXPIRATION_TIME
 import uvicorn
+from fastapi.middleware.cors import CORSMiddleware
+
+
 
 app = FastAPI()
 
 url: str = SUPABASE_URL
 key: str = SUPABASE_KEY
 supabase: Client = create_client(url, key)
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],  # Update with your frontend's URL
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 
 # User models
 class SignUpModel(BaseModel):
