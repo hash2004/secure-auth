@@ -3,6 +3,11 @@ from datetime import datetime
 from supabase import create_client, Client
 from src.config import SUPABASE_URL, SUPABASE_KEY
 import bcrypt
+import logging
+
+# Initialize logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 url: str = SUPABASE_URL
 key: str = SUPABASE_KEY
@@ -15,7 +20,8 @@ def hash_password(password: str) -> str:
 
 def verify_password(password: str, hashed_password: str) -> bool:
     if not hashed_password.startswith("$2b$"):
-        raise ValueError("Stored password is not a valid bcrypt hash. It may be in plain text.")
+        logger.error("Stored password is not a valid bcrypt hash. It may be in plain text.")
+        raise ValueError("Stored password is not a valid bcrypt hash.")
     return bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode('utf-8'))
 
 def insert_user(username: str, password: str, name: str, email: str):
@@ -23,6 +29,7 @@ def insert_user(username: str, password: str, name: str, email: str):
         # Check if username already exists
         existing_user = get_user_by_username(username)
         if existing_user:
+            logger.warning(f"User {username} already exists.")
             return {"error": "User with this username already exists."}
         
         timestamp = datetime.now().isoformat()
@@ -36,10 +43,13 @@ def insert_user(username: str, password: str, name: str, email: str):
         }).execute()
         
         if response.status_code == 201:
+            logger.info(f"User {username} successfully created.")
             return {"message": "User successfully created."}
         else:
+            logger.error(f"Failed to insert user {username}. Status code: {response.status_code}")
             return {"error": "Failed to insert user."}
     except Exception as e:
+        logger.error(f"An error occurred while inserting user {username}: {e}")
         return {"error": f"An error occurred: {e}"}
 
 def get_user_by_username(username: str):
@@ -49,19 +59,28 @@ def get_user_by_username(username: str):
         if not isinstance(users, list):
             raise TypeError(f"Expected list, got {type(users)}: {users}")
         if len(users) == 0:
+            logger.warning(f"User {username} not found.")
             return None
-        print("Returned user: ", users[0])
+        logger.info(f"Retrieved user: {username}")
         return users[0]
     except Exception as e:
+        logger.error(f"An error occurred while fetching user {username}: {e}")
         return {"error": f"An error occurred while fetching user: {e}"}
 
 def update_password(username: str, new_password: str):
     try:
         hashed_password = hash_password(new_password)
         response = supabase.table("user_info").update({"password": hashed_password}).eq("username", username).execute()
-        return {"message": "Password updated successfully."} if response.status_code == 200 else {"error": "Failed to update password."}
+        if response.status_code == 200:
+            logger.info(f"Password for {username} updated successfully.")
+            return {"message": "Password updated successfully."}
+        else:
+            logger.error(f"Failed to update password for {username}. Status code: {response.status_code}")
+            return {"error": "Failed to update password."}
     except Exception as e:
+        logger.error(f"An error occurred while updating password for {username}: {e}")
         return {"error": f"An error occurred: {e}"}
+
     
 """
 # Example of usage
