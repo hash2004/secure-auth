@@ -2,6 +2,15 @@
 
 This repository hosts the codebase for the Information Security (CS3002) project on **Secure Authentication**.
 
+pip install "fastapi[all]"
+
 
 ## running the code
 use the command "python -m src.app" to run the code from root dir after installing reqs.
+
+
+
+
+uvicorn src.app:app --reload
+
+
