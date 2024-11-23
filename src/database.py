@@ -4,6 +4,7 @@ from supabase import create_client, Client
 from src.config import SUPABASE_URL, SUPABASE_KEY
 import bcrypt
 import logging
+import uuid
 
 # Initialize logging
 logging.basicConfig(level=logging.INFO)
@@ -81,7 +82,38 @@ def update_password(username: str, new_password: str):
         logger.error(f"An error occurred while updating password for {username}: {e}")
         return {"error": f"An error occurred: {e}"}
 
+def insert_log(level: str, message: str, user: str = None, details: dict = None):
+    try:
+
+        logger.info("logging")
+        
+        response = supabase.table("logs").insert({
+            "timestamp": datetime.now().isoformat(),
+            "level": level,
+            "message": message,
+            "user": user,
+            "details": details
+        }).execute()
+        
+        logger.info("logging2")
+        if response.status_code == 201:
+            logger.info("logging successful")
+            return {"message": "Log entry created successfully."}
+        else:
+            logger.error("logging failed")
+            return {"error": "Failed to create log entry."}
+    except Exception as e:
+        return {"error": f"An error occurred: {e}"}
     
+    
+        response = supabase.table("user_info").insert({
+            "username": username,
+            "password": password,
+            "name": name,
+            "is_verified": False,
+            "email": email,
+            "created_at": timestamp
+        }).execute()    
 """
 # Example of usage
 # Insert a new user with hashed password
